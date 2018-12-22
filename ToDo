@@ -1,0 +1,44 @@
+написать отключалку в AStarPathFinding и SpeedAStarPathFinding если путь не находится
+
+
+1. Rewrite SolidOpenGL test
+
+tests
+1354 seconds - test5
+
+исправить memory leek при работе path-finder
+
+разобраться, какой пакет нужен
+libtbb-dev или libtbb2
+
+переписать многопоточный алгоритм на пул потоков
+
+
+исправить тест синхронный быстрый A*
+удачный билд http://jenkins.tra.ai/job/mergerequest_handler/1411/
+
+
+в ordered A* используется хардкод, надо справить
+unsigned long robotCnt = _sceneWrapper->getJointCnt() / 6;
+
+
+ssh -v aklyunin@ellis.tra.ai
+
+
+проблема с a_star в генераторе
+    [info]can not find free point near target
+    generator: /home/alex/Trajectories/src/CppFindPath6D/project/path_finding/lumber/src/path_finder.cpp:319: std::vector<int> PathFinder::stateToChords(std::vector<double>): Assertion `false' failed.
+    Aborted (core dumped)
+
+
+дописать генерацию полного списка смещений
+
+вроде иногда быстрый алгоритм выходит за границы допустимых углов поворота
+
+
+нужно вернуть четвёртый тест в тестирование speedAStarPathFinder
+
+починить редактор сцены
+
+починить синхронный планировщик
+
