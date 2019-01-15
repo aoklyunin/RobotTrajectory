@@ -8,6 +8,7 @@
 #include <local_path_finder.h>
 #include <future>
 #include <solid_collider.h>
+#include <solid_sync_collider.h>
 #include "scene_wrapper.h"
 #include "tra_star_path_finder.h"
 
@@ -24,7 +25,8 @@ public:
                                  unsigned int kG,
                                  unsigned int kH,
                                  unsigned int kC,
-                                 unsigned int kD)
+                                 unsigned int kD,
+                                 unsigned int threadCnt)
         :
         AStarPathFinder(std::move(sceneWrapper),
                         showTrace,
@@ -34,7 +36,21 @@ public:
                         maxLockingRepeatCnt,
                         kG, kH, kC,kD)
     {
+        _collider = std::make_shared<SolidSyncCollider>(threadCnt);
+        _collider->init(sceneWrapper->getGroupedModelPaths());
 
+        std::vector<std::vector<int>> group;
+        int cnt = 0;
+        for (auto & offset:_offsetList){
+            group.emplace_back(offset);
+            cnt++;
+            if (cnt>=threadCnt){
+                _groupedOffsetList.emplace_back(group);
+                group.clear();
+                cnt = 0;
+            }
+
+        }
     };
 
 protected:
@@ -44,4 +60,5 @@ protected:
         std::vector<int> &endChords
     ) override;
 
+    std::vector<std::vector<std::vector<int>>> _groupedOffsetList;
 };

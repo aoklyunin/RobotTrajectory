@@ -5,6 +5,7 @@
 #include <fstream>
 #include <utility>
 #include <solid_collider.h>
+#include <solid_sync_collider.h>
 
 
 const std::string PathFinder::errorLabels[10] = {
@@ -113,11 +114,15 @@ void PathFinder::showPath(std::vector<std::vector<double>> path)
 // robot - a SceneWrapper class object needs for distance, limit and collider calculation
 // discretCnt - count of grid nodes in one dimention
 PathFinder::PathFinder(std::shared_ptr<SceneWrapper> sceneWrapper,
-                       bool showTrace)
+                       bool showTrace, bool sync)
 {
     _ready = false;
     assert(sceneWrapper);
-    _collider = std::make_shared<SolidCollider>();
+    if (sync)
+        _collider = std::make_shared<SolidSyncCollider>(8);
+    else
+        _collider = std::make_shared<SolidCollider>();
+
     _collider->init(sceneWrapper->getGroupedModelPaths());
     _sceneWrapper = sceneWrapper;
     _showTrace = showTrace;
@@ -320,6 +325,7 @@ PathFinder::findPath(const std::vector<double> &startState, const std::vector<do
     std::vector<double> actualState;
     std::string logMsg;
 
+    
     while (!tick(actualState, logMsg)) {};
 
     buildPath();

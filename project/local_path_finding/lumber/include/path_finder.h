@@ -36,7 +36,7 @@ public:
     static const std::string errorLabels[10];
 
     explicit PathFinder(std::shared_ptr<SceneWrapper> sceneWrapper,
-                        bool showTrace);
+                        bool showTrace, bool sync=false);
 
     virtual ~PathFinder() = default;
 

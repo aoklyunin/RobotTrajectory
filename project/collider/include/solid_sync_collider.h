@@ -7,7 +7,7 @@ class SolidSyncCollider: public Collider
 {
 public:
 
-    const static int MAX_THREAD_CNT = 32;
+    const static int MAX_THREAD_CNT = 60;
 
     explicit SolidSyncCollider(unsigned int threadCnt);
 

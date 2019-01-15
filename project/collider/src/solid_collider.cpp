@@ -72,7 +72,7 @@ void SolidCollider::setTransformMatrices(std::vector<Eigen::Matrix4d> matrices)
 
     // info_msg("m begin");
     // info_msg(_sceneDescriptions.size()," ",matrices.size());
-    //info_msg(_links.size(), " ", matrices.size());
+    // info_msg(_links.size(), " ", matrices.size());
     assert(_links.size() == matrices.size());
     const unsigned long itCnt = _links.size();
     for (unsigned long i = 0; i < itCnt; i++) {

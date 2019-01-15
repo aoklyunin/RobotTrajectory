@@ -4,7 +4,7 @@
 SolidSyncCollider::SolidSyncCollider(unsigned int threadCnt)
 {
     _threadCnt = threadCnt;
-    assert(threadCnt < MAX_THREAD_CNT);
+    assert(threadCnt <= MAX_THREAD_CNT);
 
     for (unsigned int i = 0; i < _threadCnt; i++) {
         colliders.push_back(std::make_shared<SolidCollider>());
