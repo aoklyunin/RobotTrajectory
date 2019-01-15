@@ -336,7 +336,7 @@ PathFinder::findPath(const std::vector<double> &startState, const std::vector<do
     buildPath();
 
     auto endTime = std::chrono::high_resolution_clock::now();
-    _calculationTimeInSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - _startTime).count() / 1000;
+    _calculationTimeInSeconds = (double)std::chrono::duration_cast<std::chrono::milliseconds>(endTime - _startTime).count() / 1000;
 
     errorCode = _errorCode;
 

@@ -201,6 +201,58 @@ target_link_libraries(testFreePointFinding
         )
 
 
+add_executable(buildStat
+        buildStat.cpp
+        include/sync_tra_star_path_finder.h
+        src/sync_tra_star_path_finder.cpp
+
+        include/tra_star_path_finder.h
+        src/tra_star_path_finder.cpp
+
+        lumber/src/path_finder.cpp
+        lumber/src/local_path_finder.cpp
+        lumber/include/local_path_finder.h
+)
+
+target_link_libraries( buildStat
+        scene_wrapper
+        scene_description
+        misc
+        collider
+        ${JSONCPP_LIBRARIES}
+        ${Boost_LIBRARIES}
+        ${OPENGL_LIBRARIES}
+        ${GLUT_LIBRARY}
+        solid3
+        urdf_reader
+        pthread
+        tbbmalloc_proxy
+        tbbmalloc
+      #  -fsanitize=address
+)
+
+
+target_link_libraries(testSyncCollider
+local_path_finding
+misc
+scene_wrapper
+scene_description
+collider
+${JSONCPP_LIBRARIES}
+${Boost_LIBRARIES}
+${OPENGL_LIBRARIES}
+${GLUT_LIBRARY}
+solid3
+urdf_reader
+pthread
+tbbmalloc_proxy
+tbbmalloc
+#   -fsanitize=address
+)
+
+
+
+
 #add_test(NAME testAStarPathFinder COMMAND testAStarPathFinder)
 add_test(NAME testOrderedAStarPathFinder COMMAND testOrderedAStarPathFinder)
 

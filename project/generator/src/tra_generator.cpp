@@ -29,7 +29,7 @@ int main(int argc, char const **argv)
 
     err_msg("4robots");
 
-    Generator generator3("/opt/tra/path_finding/config/murdf/4robots.json",
+    Generator generator3("../../../config/murdf/4robots.json",
                          "tra",
                          true);
 
