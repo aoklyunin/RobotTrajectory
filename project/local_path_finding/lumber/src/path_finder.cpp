@@ -6,7 +6,7 @@
 #include <utility>
 #include <solid_collider.h>
 #include <solid_sync_collider.h>
-
+#include <chrono>
 
 const std::string PathFinder::errorLabels[10] = {
     "collision in checking path",
@@ -132,6 +132,9 @@ PathFinder::PathFinder(std::shared_ptr<SceneWrapper> sceneWrapper,
         _startState.emplace_back(0.0);
         _endState.emplace_back(0.0);
     }
+
+    _calculationTimeInSeconds = -1;
+
 }
 
 std::vector<std::vector<double>> PathFinder::_splitPath(std::vector<std::vector<double>> points, unsigned long partCnt)
@@ -320,20 +323,30 @@ PathFinder::findPath(const std::vector<double> &startState, const std::vector<do
     _startState = startState;
     _endState = endState;
 
+    _startTime = std::chrono::high_resolution_clock::now();
+
     prepareTick(startState, endState);
 
     std::vector<double> actualState;
     std::string logMsg;
 
-    
+
     while (!tick(actualState, logMsg)) {};
 
     buildPath();
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    _calculationTimeInSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - _startTime).count() / 1000;
 
     errorCode = _errorCode;
 
     return _path;
 }
+
+double PathFinder::getCalculationTimeInSeconds() const {
+    return _calculationTimeInSeconds;
+}
+
 int PathFinder::getErrorCode() const
 {
     return _errorCode;

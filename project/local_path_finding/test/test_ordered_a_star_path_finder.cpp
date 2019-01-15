@@ -4,7 +4,6 @@
 #include <traces.h>
 #include <solid_collider.h>
 
-#include <chrono>
 #include <path_finder.h>
 #include <tra_star_path_finder.h>
 #include <ordered_tra_star_path_finder.h>
@@ -15,14 +14,12 @@ std::shared_ptr<LocalPathFinder> pathFinder;
 
 void testPath(std::vector<double> &start, std::vector<double> &end)
 {
-    using namespace std::chrono;
 
-    auto startTime = high_resolution_clock::now();
 
     info_msg("test begin");
     int errorCode = -1;
     std::vector<std::vector<double>> path = pathFinder->findPath(start, end, errorCode);
-    PathFinder::showPath(path);
+    //PathFinder::showPath(path);
 
     if(errorCode!=PathFinder::NO_ERROR)
         err_msg(PathFinder::errorLabels[errorCode]);
@@ -35,11 +32,14 @@ void testPath(std::vector<double> &start, std::vector<double> &end)
     assert(SceneWrapper::getStateDistance(end, path.back()) < 0.0001);
 
     assert(!path.empty());
-//    assert(pathFinder->checkPath(path) == PathFinder::NO_ERROR);
 
-    auto endTime = high_resolution_clock::now();
-    auto seconds = duration_cast<milliseconds>(endTime - startTime).count() / 1000;
-    info_msg(seconds, " seconds");
+    info_msg("ready");
+
+    assert(pathFinder->checkPath(path) == PathFinder::NO_ERROR);
+
+    info_msg("path is valid");
+
+    info_msg(pathFinder->getCalculationTimeInSeconds(), " seconds");
 
     assert (errorCode == PathFinder::NO_ERROR);
 

@@ -21,9 +21,7 @@ std::shared_ptr<LocalPathFinder> pathFinder;
 
 void testPath(std::vector<double> &start, std::vector<double> &end)
 {
-    using namespace std::chrono;
 
-    auto startTime = high_resolution_clock::now();
 
     info_msg("test begin");
     int errorCode = -1;
@@ -42,12 +40,13 @@ void testPath(std::vector<double> &start, std::vector<double> &end)
 
     assert(!path.empty());
 
+    info_msg("ready");
 
     assert(pathFinder->checkPath(path) == PathFinder::NO_ERROR);
 
-    auto endTime = high_resolution_clock::now();
-    auto seconds = duration_cast<milliseconds>(endTime - startTime).count() / 1000;
-    info_msg(seconds, " seconds");
+    info_msg("path is valid");
+
+    info_msg(pathFinder->getCalculationTimeInSeconds(), " seconds");
 
     assert (errorCode == PathFinder::NO_ERROR);
 

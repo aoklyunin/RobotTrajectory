@@ -77,6 +77,8 @@ public:
     int getErrorCode() const;
     const std::vector<std::vector<double>> &getPath() const;
 
+    double getCalculationTimeInSeconds() const;
+
 protected:
 
     int _errorCode = NO_ERROR;
@@ -111,5 +113,8 @@ protected:
     std::vector<double> _startState;
     std::vector<std::vector<double>> _path;
 
+    std::chrono::time_point<std::chrono::system_clock> _startTime;
+
+    double _calculationTimeInSeconds;
 
 };
