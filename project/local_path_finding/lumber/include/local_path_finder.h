@@ -94,17 +94,19 @@ public:
     getNeighborPtr(std::vector<int> newChords, std::shared_ptr<PathNode> currentNode, std::vector<int> &endChords);
 
     // service methods for convesion between chords space and state space
-    std::vector<double> chordToState(std::vector<int> &chords);
+    std::vector<double> chordToState(std::vector<int> &chords) const;
     std::vector<int> stateToChords(std::vector<double> state);
 
-    void prepareTick(const std::vector<double> &startState, const std::vector<double> &endState) override;
-    bool tick(std::vector<double> &state, std::string &logMsg) override;
+    void prepareFindTick(const std::vector<double> &startState, const std::vector<double> &endState) override;
+    bool findTick(std::vector<double> &state, std::string &logMsg) override;
     void buildPath() override;
 
     const std::vector<double> &getStartStateFromChords() const;
     const std::vector<double> &getEndStateFromChords() const;
 
     const std::vector<double> &getSteps() const;
+
+    std::vector<std::vector<double>> getFindingPoses() const;
 
 protected:
 
@@ -212,5 +214,7 @@ private:
     );
 
     std::vector<std::vector<unsigned long>> _actuatorRanges;
+
+    std::vector<std::shared_ptr<PathNode>> _loopNodes;
 
 };

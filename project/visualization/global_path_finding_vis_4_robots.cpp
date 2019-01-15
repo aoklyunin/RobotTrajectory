@@ -133,7 +133,7 @@ void display(void)
         if (flgPlay) {
           //  info_msg("flgPlay");
             if (!flgPathFinded) {
-                if (pathFinder->tick(actualState, logMsg)) {
+                if (pathFinder->findTick(actualState, logMsg)) {
                     flgPathFinded = true;
                     pathFinder->buildPath();
                 }
@@ -147,7 +147,7 @@ void display(void)
                 else {
                     tm = 0;
                     flgPathFinded = false;
-                    pathFinder->prepareTick(start, end);
+                    pathFinder->prepareFindTick(start, end);
                 }
                 tm += 0.1;
             }
@@ -363,7 +363,7 @@ void init(void)
     pathFinder = std::make_shared<GlobalPathFinder>(sceneWrapper, true);
 
     actuatorIndexesRange = pathFinder->getSceneWrapper()->getActuratorIndexRanges();
-    pathFinder->prepareTick(start, end);
+    pathFinder->prepareFindTick(start, end);
 
     maxRobotNum = actuatorIndexesRange.size() - 1;
 

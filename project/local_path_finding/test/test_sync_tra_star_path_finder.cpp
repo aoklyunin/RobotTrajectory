@@ -25,7 +25,10 @@ void testPath(std::vector<double> &start, std::vector<double> &end)
 
     info_msg("test begin");
     int errorCode = -1;
+
     std::vector<std::vector<double>> path = pathFinder->findPath(start, end, errorCode);
+    std::vector<std::vector<double>> findingPoses = pathFinder->getFindingPoses();
+
     //PathFinder::showPath(path);
 
     if(errorCode!=PathFinder::NO_ERROR)

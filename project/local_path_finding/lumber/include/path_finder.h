@@ -40,8 +40,8 @@ public:
 
     virtual ~PathFinder() = default;
 
-    virtual void prepareTick(const std::vector<double> &startState, const std::vector<double> &endState) = 0;
-    virtual bool tick(std::vector<double> & state, std::string &logMsg)  = 0;
+    virtual void prepareFindTick(const std::vector<double> &startState, const std::vector<double> &endState) = 0;
+    virtual bool findTick(std::vector<double> &state, std::string &logMsg)  = 0;
     virtual void buildPath()  = 0;
 
     static void showPath(std::vector<std::vector<double>> path);

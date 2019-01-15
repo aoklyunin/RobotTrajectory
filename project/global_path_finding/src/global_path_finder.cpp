@@ -73,10 +73,10 @@ std::vector<std::vector<double>> GlobalPathFinder::_getCollisionPair(
     return std::vector<std::vector<double>>{beginPointLoop, endPointLoop};
 }
 
-bool GlobalPathFinder::tick(std::vector<double> &state, std::string &logMsg)
+bool GlobalPathFinder::findTick(std::vector<double> &state, std::string &logMsg)
 {
     assert(_localPathFinder);
-    if (_localPathFinder->tick(state, logMsg)) {
+    if (_localPathFinder->findTick(state, logMsg)) {
         _ready = false;
         _errorCode = _localPathFinder->getErrorCode();
         logMsg = "new local path finder";
@@ -123,7 +123,7 @@ bool GlobalPathFinder::tick(std::vector<double> &state, std::string &logMsg)
                     MAX_LOCKING_CNT,
                     K_G, K_H, K_C, K_D
                 );
-                _localPathFinder->prepareTick(beforeCollisionPoint, afterCollisionPoint);
+                _localPathFinder->prepareFindTick(beforeCollisionPoint, afterCollisionPoint);
             }
             while (_localPathFinder->getErrorCode() != NO_ERROR);
 
@@ -142,8 +142,8 @@ bool GlobalPathFinder::tick(std::vector<double> &state, std::string &logMsg)
     return false;
 }
 
-void GlobalPathFinder::prepareTick(const std::vector<double> &startState,
-                                   const std::vector<double> &endState)
+void GlobalPathFinder::prepareFindTick(const std::vector<double> &startState,
+                                       const std::vector<double> &endState)
 {
     _kD = K_D;
     _startState = startState;
@@ -165,7 +165,7 @@ void GlobalPathFinder::prepareTick(const std::vector<double> &startState,
             K_G, K_H, 0, K_D
         );
 
-        _localPathFinder->prepareTick(startState, endState);
+        _localPathFinder->prepareFindTick(startState, endState);
         _minDiscretCnt += DISCRET_STEP;
         //_kD += K_D_STEP;
     }

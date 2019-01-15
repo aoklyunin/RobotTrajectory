@@ -1,6 +1,7 @@
 #include "local_path_finder.h"
 
 #include <fstream>
+#include <local_path_finder.h>
 
 
 bool LocalPathFinder::_checkUnitOffsets(std::vector<int> &offsetList)
@@ -374,8 +375,7 @@ bool LocalPathFinder::_findNodeInOpenedList(std::vector<int> &chords)
 }
 
 // convert chords to state
-std::vector<double> LocalPathFinder::chordToState(std::vector<int> &chords)
-{
+std::vector<double> LocalPathFinder::chordToState(std::vector<int> &chords) const {
     std::vector<double> state;
     for (unsigned int i = 0; i < chords.size(); i++) {
         state.push_back(chords.at(i) * _steps.at(i) + _actuators.at(i)->minAngle);
@@ -717,9 +717,9 @@ std::shared_ptr<PathNode> LocalPathFinder::getNeighborPtr(
     }
 }
 
-bool LocalPathFinder::tick(std::vector<double> &state, std::string &logMsg)
+bool LocalPathFinder::findTick(std::vector<double> &state, std::string &logMsg)
 {
-    // info_msg("tick");
+    // info_msg("findTick");
 
     if (_openSet.empty()) {
         _errorCode = ERROR_CAN_NOT_FIND_PATH;
@@ -727,6 +727,9 @@ bool LocalPathFinder::tick(std::vector<double> &state, std::string &logMsg)
     }
 
     std::shared_ptr<PathNode> currentNode = _openSet.begin()->ptr;
+
+    _loopNodes.emplace_back(currentNode);
+
     if (_isEqual(currentNode->chords, _endChords)) {
         _errorCode = NO_ERROR;
         return true;
@@ -773,13 +776,23 @@ bool LocalPathFinder::tick(std::vector<double> &state, std::string &logMsg)
     return false;
 }
 
-void LocalPathFinder::prepareTick(const std::vector<double> &startState,
-                                  const std::vector<double> &endState)
+std::vector<std::vector<double>> LocalPathFinder::getFindingPoses() const {
+    std::vector<std::vector<double>> findingPoses;
+    for(auto & node:_loopNodes){
+        findingPoses.emplace_back(chordToState(node->chords));
+    }
+    return  findingPoses;
+}
+
+void LocalPathFinder::prepareFindTick(const std::vector<double> &startState,
+                                      const std::vector<double> &endState)
 {
     _startState = startState;
     _endState = endState;
 
-    info_msg("LocalPathFinder::prepareTick");
+    _loopNodes.clear();
+
+    info_msg("LocalPathFinder::prepareFindTick");
 
     SceneWrapper::dispState(startState, "startState");
     SceneWrapper::dispState(endState, "endState");

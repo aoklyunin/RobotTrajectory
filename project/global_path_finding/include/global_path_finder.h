@@ -39,10 +39,10 @@ public:
     {};
 
 
-    bool tick(std::vector<double> & state, std::string &logMsg) override;
+    bool findTick(std::vector<double> &state, std::string &logMsg) override;
 
-    void prepareTick(const std::vector<double> &startState,
-                                       const std::vector<double> &endState) override;
+    void prepareFindTick(const std::vector<double> &startState,
+                         const std::vector<double> &endState) override;
 
     void buildPath() override;
 

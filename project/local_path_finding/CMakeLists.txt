@@ -121,7 +121,7 @@ target_link_libraries(testOrderedAStarPathFinder
 
 
 add_executable(testSyncAStarPathFinder
-        test/test_sync_a_star_path_finder.cpp
+        test/test_sync_tra_star_path_finder.cpp
         include/sync_tra_star_path_finder.h
         src/sync_tra_star_path_finder.cpp
 

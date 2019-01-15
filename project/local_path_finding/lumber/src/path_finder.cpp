@@ -325,13 +325,13 @@ PathFinder::findPath(const std::vector<double> &startState, const std::vector<do
 
     _startTime = std::chrono::high_resolution_clock::now();
 
-    prepareTick(startState, endState);
+    prepareFindTick(startState, endState);
 
     std::vector<double> actualState;
     std::string logMsg;
 
 
-    while (!tick(actualState, logMsg)) {};
+    while (!findTick(actualState, logMsg)) {};
 
     buildPath();
 
