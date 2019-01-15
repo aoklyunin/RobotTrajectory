@@ -199,6 +199,7 @@ SceneEditorWindow::SceneEditorWindow(SceneEditorMainWindow *mw, std::string scen
     std::shared_ptr<SceneWrapper> sceneWrapper = std::make_shared<SceneWrapper>();
     sceneWrapper->buildFromFile(scenePath);
 
+
     _pathFinder = std::make_shared<AStarPathFinder>(sceneWrapper, true, 100, 10, 4000, 251, 1, 1, 0, 2);
 
 
@@ -264,7 +265,7 @@ void SceneEditorWindow::doAdd()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     QString::fromUtf8("Открыть файл"),
-                                                    "/opt/tra/path_finding/config/urdf");
+                                                    "../../../");
     info_msg(fileName.toStdString());
     //_scenewrapper->addModel();
 

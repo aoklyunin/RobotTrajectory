@@ -48,7 +48,7 @@ void SceneEditorMainWindow::onOpenScene()
     if (!centralWidget()) {
         QString fileName = QFileDialog::getOpenFileName(this,
                                                         QString::fromUtf8("Open scene"),
-                                                        "/opt/tra/path_finding/config/murdf/");
+                                                        "../../../");
                                                      //   "/home/alex/Trajectories/src/CppFindPath6D/config/murdf");
         _window = new SceneEditorWindow(this, fileName.toStdString());
         setCentralWidget(_window);

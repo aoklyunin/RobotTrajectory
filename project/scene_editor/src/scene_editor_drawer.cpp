@@ -46,6 +46,7 @@
 SceneEditorDrawer::SceneEditorDrawer()
     : m_count(0)
 {
+
 }
 
 void SceneEditorDrawer::setScale(double scale)
@@ -82,6 +83,8 @@ void SceneEditorDrawer::setState(const std::vector<double> &state)
 //    info_msg("sceene editor drawer: set state");
 
     std::vector<Eigen::Matrix4d> matrices = _pathFinder->getSceneWrapper()->getTrasformMatrices(state);
+
+
     info_msg("matrices geted: ",matrices.size());
 
     _pathFinder->updateCollider();
@@ -131,7 +134,8 @@ void SceneEditorDrawer::setPathFinder(std::shared_ptr<PathFinder> pathFinder)
     _pathFinder = pathFinder;
     assert(!_pathFinder->getState().empty());
     SceneWrapper::dispState(_pathFinder->getState(),"set scene wrapper");
-    setState(_pathFinder->getState());
+    setState(_pathFinder->getSceneWrapper()->getRandomState());
+
 
 }
 
