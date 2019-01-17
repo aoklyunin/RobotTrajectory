@@ -57,3 +57,11 @@ include_directories(scene_editor/include)
 
 add_subdirectory(project/path_finding_client)
 include_directories(path_finding_client/include)
+
+
+add_subdirectory(project/force_torque)
+include_directories(force_torque/include)
+
+
+add_subdirectory(project/graphic_template)
+include_directories(graphic_template/include)
