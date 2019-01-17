@@ -5,14 +5,14 @@
 #include "scene_wrapper.h"
 #include "collider.h"
 
-class ForceTorque{
+class GraphicTemplate{
 public:
     void paint();
     void prepareTick();
     void tick();
     bool isReady();
 
-    ForceTorque(std::shared_ptr<SceneWrapper>);
+    GraphicTemplate(std::shared_ptr<SceneWrapper>);
     std::shared_ptr<SceneWrapper> getSceneWrapper();
 
     void setState(std::vector<double> state);

@@ -1,35 +1,38 @@
 #include "force_torque.h"
 #include "solid_collider.h"
+#include "../../force_torque/include/force_torque.h"
 
-void ForceTorque::paint() {
+
+void GraphicTemplate::paint() {
 
     _collider->paint(_sceneWrapper->getTrasformMatrices(_state), false);
 
 }
 
-void ForceTorque::prepareTick() {
+void GraphicTemplate::prepareTick() {
 
 }
 
-void ForceTorque::tick() {
+void GraphicTemplate::tick() {
 
 }
 
-ForceTorque::ForceTorque(std::shared_ptr<SceneWrapper> sceneWrapper) {
+GraphicTemplate::GraphicTemplate(std::shared_ptr<SceneWrapper> sceneWrapper) {
     _sceneWrapper = sceneWrapper;
     _state = sceneWrapper->getRandomState();
     _collider = std::make_shared<SolidCollider>();
     _collider->init(sceneWrapper->getGroupedModelPaths());
 }
 
-std::shared_ptr<SceneWrapper> ForceTorque::getSceneWrapper() {
+std::shared_ptr<SceneWrapper> GraphicTemplate::getSceneWrapper() {
     return _sceneWrapper;
 }
 
-bool ForceTorque::isReady() {
+bool GraphicTemplate::isReady() {
     return true;
 }
 
-void ForceTorque::setState(std::vector<double> state) {
+void GraphicTemplate::setState(std::vector<double> state) {
     _state = state;
 }
+

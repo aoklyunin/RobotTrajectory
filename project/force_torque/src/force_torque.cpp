@@ -1,5 +1,7 @@
 #include "force_torque.h"
 #include "solid_collider.h"
+#include <iostream>
+#include <fstream>
 
 void ForceTorque::paint() {
 
@@ -12,7 +14,9 @@ void ForceTorque::prepareTick() {
 }
 
 void ForceTorque::tick() {
+    for (auto &sd :_sceneWrapper->getSceneDescriptions()){
 
+    }
 }
 
 ForceTorque::ForceTorque(std::shared_ptr<SceneWrapper> sceneWrapper) {
@@ -32,4 +36,12 @@ bool ForceTorque::isReady() {
 
 void ForceTorque::setState(std::vector<double> state) {
     _state = state;
+}
+
+void ForceTorque::writeReport(char *path) {
+    std::ofstream myfile;
+    myfile.open (path);
+    myfile << "Writing this to a file.\n";
+    myfile.close();
+    info_msg("writeReport works");
 }

@@ -23,7 +23,7 @@ bool flgPlay = false;
 
 bool flgPathFinded = false;
 
-std::shared_ptr<ForceTorque> forceTorque;
+std::shared_ptr<GraphicTemplate> forceTorque;
 
 unsigned int actualStatePos = 0;
 
@@ -310,7 +310,7 @@ void init(void)
     std::shared_ptr<SceneWrapper> sceneWrapper = std::make_shared<SceneWrapper>();
     sceneWrapper->buildFromFile("../../../config/murdf/4robots.json");
 
-    forceTorque = std::make_shared<ForceTorque>(sceneWrapper);
+    forceTorque = std::make_shared<GraphicTemplate>(sceneWrapper);
     forceTorque->prepareTick();
 
     actuatorIndexesRange = forceTorque->getSceneWrapper()->getActuratorIndexRanges();

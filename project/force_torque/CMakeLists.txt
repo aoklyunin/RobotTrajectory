@@ -73,7 +73,7 @@ target_link_libraries(force_torque_client
         ${GLUT_LIBRARY}
         -lboost_filesystem
         -lboost_system
-        -fsanitize=address
+        #-fsanitize=address
         )
 
 

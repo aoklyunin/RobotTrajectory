@@ -5,8 +5,7 @@
 #include "force_torque.h"
 
 std::vector<double> start
-    {-2.249, -0.468, -0.594, -2.520, 0.834, 1.116, 2.965, 0.415, 0.332, 0.374, -1.819, 1.548, -0.222, 0.090, -0.377,
-     1.824, -1.213, 0.679, -1.040, -3.031, 0.064, 0.572, 0.087, -1.996};
+    {-2.249, -0.468, -0.594, -2.520, 0.834, 1.116};
 
 /*
  * keys from '1' to '+' rotate joints
@@ -157,6 +156,7 @@ void myReshape(int w, int h)
 
 void goodbye(void)
 {
+    forceTorque->writeReport("../../../reports/1.csv");
     std::cout << "goodbye ..." << std::endl;
     exit(0);
 }
@@ -308,7 +308,7 @@ void init(void)
                     Eigen::Vector3d(0.0, 1.0, 0.0));
 
     std::shared_ptr<SceneWrapper> sceneWrapper = std::make_shared<SceneWrapper>();
-    sceneWrapper->buildFromFile("../../../config/murdf/4robots.json");
+    sceneWrapper->buildFromFile("../../../config/murdf/demo_scene.json");
 
     forceTorque = std::make_shared<ForceTorque>(sceneWrapper);
     forceTorque->prepareTick();
