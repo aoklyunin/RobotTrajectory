@@ -177,7 +177,7 @@ std::vector<Eigen::Vector3d> URDFSceneDescription::getAxes(std::vector<double> s
     Eigen::Matrix4d transformMatrix = *getStartMatrix();
 
     unsigned int jointPos = 0;
-    info_msg("jsize: ",_joints.size());
+   // info_msg("jsize: ",_joints.size());
     for (unsigned long i = 0; i < _joints.size(); i++) {
         auto jd = _joints.at(i);
         if (!jd.isFixed) {

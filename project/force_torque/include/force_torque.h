@@ -9,7 +9,7 @@ class ForceTorque{
 public:
     void paint();
     void prepareTick();
-    void tick();
+    void tick(double dt);
     bool isReady();
 
     ForceTorque(std::shared_ptr<SceneWrapper>);
@@ -22,16 +22,17 @@ public:
 
     void calculateDynamic();
 
-    void calculateKinematic();
+    void calculateKinematic(double dt);
     void setFlgPlay(bool flgPlay);
 
 private:
     std::shared_ptr<SceneWrapper> _sceneWrapper;
 
     std::vector<double> _state;
-    std::vector<Eigen::Vector3d> _velocities;
-    std::vector<Eigen::Vector3d> _accelerations;
+    std::vector<double> _velocities;
+    std::vector<double> _accelerations;
     std::vector<double> _torques;
+    std::vector<double> _inertias;
     std::vector<Eigen::Vector3d> _forces;
 
     // tm, state, torque

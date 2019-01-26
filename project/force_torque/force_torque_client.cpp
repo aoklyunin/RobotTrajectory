@@ -16,6 +16,8 @@ std::vector<double> actualState;
 
 std::vector<double> steps;
 
+std::chrono::time_point<std::chrono::system_clock> _curTime;
+
 double tm = 0;
 
 bool flgPlay = false;
@@ -107,8 +109,12 @@ void display(void) {
 
         glColor4f(0, 0, 1, 0.7);
         forceTorque->setFlgPlay(flgPlay);
-        forceTorque->setState(actualState);
-        forceTorque->tick();
+        auto newTime = std::chrono::high_resolution_clock::now();
+        double dt = (double)std::chrono::duration_cast<std::chrono::milliseconds>(newTime - _curTime).count() / 1000;
+        _curTime = newTime;
+       // info_msg(dt);
+        forceTorque->tick( dt);
+
         forceTorque->paint();
 
         glPopMatrix();
@@ -156,17 +162,21 @@ void goodbye(void) {
 }
 
 void myKeyboard(unsigned char key, int x, int y) {
-    info_msg("myKeyboard");
+   // info_msg("myKeyboard");
     unsigned long startPos = actuatorIndexesRange.at(currenRobotNum).at(0);
     float delta = 0.1f;
     switch (key) {
         case '`':
             actualState = forceTorque->getSceneWrapper()->getRandomState();
-            info_msg("tilda");
+
+            forceTorque->setState(actualState);
+     //       info_msg("tilda");
             break;
 
         case '1':
             actualState.at(startPos) += delta;
+
+            forceTorque->setState(actualState);
             break;
         case '2':
             actualState.at(startPos) -= delta;
@@ -251,6 +261,7 @@ void myKeyboard(unsigned char key, int x, int y) {
         default:
             break;
     }
+
     display();
 }
 
@@ -364,6 +375,7 @@ void Loop(int i) {
 
 int main(int argc, char **argv) {
 
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(40, 40);
@@ -381,6 +393,8 @@ int main(int argc, char **argv) {
     setCamera();
     glutDisplayFunc(display);
     glutPassiveMotionFunc(motionFunc);
+
+    _curTime =  std::chrono::high_resolution_clock::now();
     glutMainLoop();
 
 
