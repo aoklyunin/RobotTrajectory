@@ -2,6 +2,8 @@
 #include "solid_collider.h"
 #include <iostream>
 #include <fstream>
+#include <include/force_torque.h>
+
 
 void ForceTorque::paint() {
 
@@ -14,8 +16,10 @@ void ForceTorque::prepareTick() {
 }
 
 void ForceTorque::tick() {
+    //info_msg(_flgPlay);
     calculateDynamic();
-    calculateKinematic();
+    if (_flgPlay)
+        calculateKinematic();
 }
 
 ForceTorque::ForceTorque(std::shared_ptr<SceneWrapper> sceneWrapper) {
@@ -23,6 +27,7 @@ ForceTorque::ForceTorque(std::shared_ptr<SceneWrapper> sceneWrapper) {
     _state = sceneWrapper->getRandomState();
     _collider = std::make_shared<SolidCollider>();
     _collider->init(sceneWrapper->getGroupedModelPaths());
+    G = Eigen::Vector3d({0.0, 0.0, 9.8});
 }
 
 std::shared_ptr<SceneWrapper> ForceTorque::getSceneWrapper() {
@@ -39,30 +44,105 @@ void ForceTorque::setState(std::vector<double> state) {
 
 void ForceTorque::writeReport(char *path) {
     std::ofstream myfile;
-    myfile.open (path);
+    myfile.open(path);
     myfile << "Writing this to a file.\n";
     myfile.close();
     info_msg("writeReport works");
 }
 
-void ForceTorque::calculateDynamic(){
-    for (auto &sd :_sceneWrapper->getSceneDescriptions()){
+void ForceTorque::calculateDynamic() {
+    //info_msg("ForceTorque::calculateDynamic()");
+    for (auto &sd :_sceneWrapper->getSceneDescriptions()) {
         auto linkPositions = sd->getAllLinkPositions(_state);
         auto massCenterPositions = sd->getAllLinkMassCenterPositions(_state);
-        //info_msg(massCenterPositions.size());
-        for (int i=0;i<sd->getLinkCnt();i++){
-            info_msg(
-                    massCenterPositions.at(i*4)," ",
-                    massCenterPositions.at(i*4+1)," ",
-                    massCenterPositions.at(i*4+2)," ",
-                    massCenterPositions.at(i*4+3)
-            );
+        auto inertias = sd->getInertias();
+
+        std::vector<Eigen::Vector3d> torques;
+
+        _forces.clear();
+        _accelerations.clear();
+        _velocities.clear();
+        _torques.clear();
+
+        for (int i = 0; i < sd->getLinkCnt() + 1; i++) {
+            _forces.emplace_back(Eigen::Vector3d({0.0, 0.0, 0.0}));
+            torques.emplace_back(Eigen::Vector3d({0.0, 0.0, 0.0}));
+            _accelerations.emplace_back(Eigen::Vector3d({0.0, 0.0, 0.0}));
+            _velocities.emplace_back(Eigen::Vector3d({0.0, 0.0, 0.0}));
+            _torques.emplace_back(0.0);
         }
+
+
+
+        for (int i = sd->getLinkCnt() - 1; i >= 0; i--) {
+            Eigen::Vector3d rNext;
+            if (i == sd->getLinkCnt() - 1) {
+                rNext = Eigen::Vector3d({0.0, 0.0, 0.0});
+            } else {
+                rNext = Eigen::Vector3d({
+                                                massCenterPositions.at(i * 4 + 1),
+                                                massCenterPositions.at(i * 4 + 2),
+                                                massCenterPositions.at(i * 4 + 3),
+                                        })
+                        - Eigen::Vector3d({
+                                                  linkPositions.at((i + 1) * 3),
+                                                  linkPositions.at((i + 1) * 3 + 1),
+                                                  linkPositions.at((i + 1) * 3 + 2)
+                                          });
+            }
+
+            Eigen::Vector3d rPrev = Eigen::Vector3d({
+                                                            massCenterPositions.at(i * 4 + 1),
+                                                            massCenterPositions.at(i * 4 + 2),
+                                                            massCenterPositions.at(i * 4 + 3),
+                                                    })
+                                    - Eigen::Vector3d({
+                                                              linkPositions.at(i * 3),
+                                                              linkPositions.at(i * 3 + 1),
+                                                              linkPositions.at(i * 3 + 2)
+                                                      });
+
+            _forces.at(i) = _forces.at(i + 1) + massCenterPositions.at(i * 4) * (_accelerations.at(i) - G);
+            torques.at(i) = torques.at(i + 1) + _forces.at(i).cross(rPrev) - _forces.at(i + 1).cross(rNext) +
+                            inertias.at(i) * _accelerations.at(i) +
+                            _accelerations.at(i).cross(inertias.at(i) * _velocities.at(i));
+
+
+            //info_msg("next: ", rNext(0), " ", rNext(1), " ", rNext(2),
+            //        " prev: ", rPrev(0), " ", rPrev(1), " ", rPrev(2));
+
+        }
+
+        auto axises = sd->getAxes(_state);
+
+
+       // info_msg("ax size: ",axises.size()," l cnt: ",sd->getLinkCnt());
+       int tPos = 0;
+
+        for (int i = 0; i < sd->getLinkCnt(); i++) {
+            if (axises.at(i).norm() > 0.0001) {
+                double proj = torques.at(i).dot(axises.at(i)) / axises.at(i).norm();
+                _torques.emplace_back(proj);
+                //info_msg(proj);
+               // info_msg("proj: ", i, " ", proj," tn: ",torques.at(i).norm()," an: ",axis.at(i+1).norm());
+              //  info_msg("axis: ", axis.at(i+1));
+               // info_msg("torques: ", torques.at(i));
+            }
+        }
+        SceneWrapper::dispState(_torques,"torques");
+    }
+
+
+}
+
+void ForceTorque::calculateKinematic() {
+    for (auto &sd :_sceneWrapper->getSceneDescriptions()) {
+        for (int i = 0; i < sd->getLinkCnt(); i++)
+            info_msg("forces: ", _forces.at(i)(0), " ", _forces.at(i)(1), " ", _forces.at(i)(2),
+                     " torques: ", _torques.at(i));
     }
 }
 
-void ForceTorque::calculateKinematic(){
-    for (auto &sd :_sceneWrapper->getSceneDescriptions()){
-
-    }
+void ForceTorque::setFlgPlay(bool flgPlay) {
+    _flgPlay = flgPlay;
 }

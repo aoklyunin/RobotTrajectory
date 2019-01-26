@@ -17,13 +17,15 @@ struct Actuator
     double minAngle;
     unsigned long jointNum;
     std::string prevLinkName;
+    Eigen::Vector3d axis;
 
     Actuator(double maxAcceleration,
              double maxVelocity,
              double maxAngle,
              double minAngle,
              unsigned long jointNum,
-             std::string prevLinkName);
+             std::string prevLinkName,
+             Eigen::Vector3d axis);
     std::string toString() const;
 };
 
@@ -92,6 +94,9 @@ public:
     std::vector<double> getFullPosition(std::shared_ptr<Eigen::Matrix4d> matrix);
     std::vector<double> getAllLinkPositions(std::vector<double> state);
     std::vector<double> getAllLinkMassCenterPositions(std::vector<double> state);
+    std::vector<Eigen::Matrix3d> getInertias();
+
+    virtual std::vector<Eigen::Vector3d> getAxes(std::vector<double> state) = 0;
 
 protected:
 
@@ -100,6 +105,7 @@ protected:
     virtual std::vector<Eigen::Matrix4d> _getTrasformMatrixies(std::vector<double> state) = 0;
     virtual Eigen::Matrix4d _getLastTrasformMatrix(std::vector<double> state) = 0;
     virtual std::vector<double> _getMassCenters() = 0;
+
     virtual std::vector<Eigen::Matrix3d> _getInertias() = 0;
 
     void _beforeLoadFromFile();

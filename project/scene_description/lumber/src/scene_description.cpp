@@ -126,9 +126,10 @@ Actuator::Actuator(double maxAcceleration,
                    double maxAngle,
                    double minAngle,
                    unsigned long jointNum,
-                   std::string prevLinkName)
+                   std::string prevLinkName,
+                   Eigen::Vector3d axis)
     : maxAcceleration(maxAcceleration), maxVelocity(maxVelocity), maxAngle(maxAngle), minAngle(minAngle), jointNum(
-    jointNum), prevLinkName(std::move(prevLinkName))
+    jointNum), prevLinkName(std::move(prevLinkName)),axis(axis)
 {}
 
 std::string Actuator::toString() const
@@ -330,6 +331,17 @@ std::vector<double> SceneDescription::getAllLinkMassCenterPositions(std::vector<
     return cmposes;
 }
 
+
+
+
+std::vector<Eigen::Matrix3d> SceneDescription::getInertias(){
+    std::vector<Eigen::Matrix3d> inertias;
+
+    for (int i=0;i<_links.size();i++){
+        inertias.emplace_back(_links.at(i)->inertia);
+    }
+    return inertias;
+}
 
 
 // get position by transfer function

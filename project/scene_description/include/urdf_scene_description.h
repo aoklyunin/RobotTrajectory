@@ -38,6 +38,7 @@ public:
     URDFSceneDescription() = default;
     ~URDFSceneDescription() override = default;
 
+    std::vector<Eigen::Vector3d> getAxes(std::vector<double> state) override;
 
 private:
 

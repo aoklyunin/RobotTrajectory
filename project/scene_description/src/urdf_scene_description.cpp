@@ -20,13 +20,15 @@ void URDFSceneDescription::_addURDFJoints(std::vector<std::shared_ptr<urdf::Join
 
         bool isFixed = j->type == urdf::Joint::FIXED;
 
+
         if (!isFixed) {
             _actuators.emplace_back(std::make_shared<Actuator>(j->limits->effort,
                                                                j->limits->velocity,
                                                                j->limits->upper,
                                                                j->limits->lower,
                                                                i,
-                                                               j->child_link_name
+                                                               j->child_link_name,
+                                                               Eigen::Vector3d({j->axis.x,j->axis.y,j->axis.z})
             ));
         }
         findedLinkNames.insert(j->child_link_name);
@@ -65,6 +67,7 @@ void URDFSceneDescription::_addURDFJoints(std::vector<std::shared_ptr<urdf::Join
                 inertia,
                 mc));
 
+       // info_msg(axis.x," ",axis.y," ",axis.z);
         _joints.emplace_back(selfTransform, linkTransform, axis, isFixed, 0.0);
     }
 
@@ -143,7 +146,7 @@ std::vector<Eigen::Matrix4d> URDFSceneDescription::_getTrasformMatrixies(std::ve
 //    info_msg("after main loop");
 
     for (const auto &link:_fixedLinks) {
-        // info_msg("fixed link");
+      //  info_msg("fixed link");
         matrices.emplace_back(transformMatrix * (*link->transformMatrix));
     }
 
@@ -164,6 +167,31 @@ Eigen::Matrix4d URDFSceneDescription::_getMatrixFromPose(urdf::Pose pose) {
             2 * b * d - 2 * a * c, 2 * c * d + 2 * a * b, a * a - b * b - c * c + d * d, p.z,
             0, 0, 0, 1;
     return m;
+}
+
+std::vector<Eigen::Vector3d> URDFSceneDescription::getAxes(std::vector<double> state)
+{
+    //info_msg("URDFSceneDescription::getAxes");
+    std::vector<Eigen::Vector3d> axes;
+
+    Eigen::Matrix4d transformMatrix = *getStartMatrix();
+
+    unsigned int jointPos = 0;
+    info_msg("jsize: ",_joints.size());
+    for (unsigned long i = 0; i < _joints.size(); i++) {
+        auto jd = _joints.at(i);
+        if (!jd.isFixed) {
+            jd.jointAngle = state.at(jointPos);
+            jointPos++;
+        }
+        //Eigen::Matrix4d tf = transformMatrix * jd.getTransformMatrix() * jd.linkTransform;
+       // info_msg("in: ",jd.axis.x," ",jd.axis.y," ",jd.axis.z);
+        Eigen::Vector4d axis = transformMatrix*Eigen::Vector4d({jd.axis.x,jd.axis.y,jd.axis.z,0});
+       // info_msg("out:",axis);
+        axes.emplace_back(Eigen::Vector3d({axis(0),axis(1),axis(2)}));
+        transformMatrix = transformMatrix * jd.getTransformMatrix();
+    }
+    return axes;
 }
 
 

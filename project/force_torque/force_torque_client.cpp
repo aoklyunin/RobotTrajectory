@@ -5,7 +5,7 @@
 #include "force_torque.h"
 
 std::vector<double> start
-    {-2.249, -0.468, -0.594, -2.520, 0.834, 1.116};
+        {-2.249, -0.468, -0.594, -2.520, 0.834, 1.116};
 
 /*
  * keys from '1' to '+' rotate joints
@@ -60,8 +60,7 @@ long maxRobotNum = 0;
 bool flgTick = true;
 
 // process mouse moving
-void motionFunc(int x, int y)
-{
+void motionFunc(int x, int y) {
     if (prevPosX == VERY_BIG_MOUSE_COORDS) {
         prevPosX = x;
     }
@@ -83,8 +82,7 @@ void motionFunc(int x, int y)
     glutPostRedisplay();
 }
 
-void display(void)
-{
+void display(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
@@ -108,6 +106,8 @@ void display(void)
         glScalef(2, 2, 2);
 
         glColor4f(0, 0, 1, 0.7);
+        forceTorque->setFlgPlay(flgPlay);
+        forceTorque->setState(actualState);
         forceTorque->tick();
         forceTorque->paint();
 
@@ -120,24 +120,20 @@ void display(void)
 
 void setCamera();
 
-void newPlacements()
-{}
+void newPlacements() {}
 
-void toggleIdle()
-{
+void toggleIdle() {
     static bool idle = true;
     if (idle) {
         glutIdleFunc(newPlacements);
         idle = false;
-    }
-    else {
+    } else {
         glutIdleFunc(0);
         idle = true;
     }
 }
 
-void setCamera()
-{
+void setCamera() {
     glLoadIdentity();
     gluLookAt(0, 0, 1,
               0.0f, 0.0f, 0.0f,
@@ -145,8 +141,7 @@ void setCamera()
     display();
 }
 
-void myReshape(int w, int h)
-{
+void myReshape(int w, int h) {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -154,66 +149,92 @@ void myReshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void goodbye(void)
-{
+void goodbye(void) {
     forceTorque->writeReport("../../../reports/1.csv");
     std::cout << "goodbye ..." << std::endl;
     exit(0);
 }
 
-void myKeyboard(unsigned char key, int x, int y)
-{
+void myKeyboard(unsigned char key, int x, int y) {
+    info_msg("myKeyboard");
     unsigned long startPos = actuatorIndexesRange.at(currenRobotNum).at(0);
     float delta = 0.1f;
     switch (key) {
-        case '1': actualState.at(startPos) += delta;
+        case '`':
+            actualState = forceTorque->getSceneWrapper()->getRandomState();
+            info_msg("tilda");
             break;
-        case '2': actualState.at(startPos) -= delta;
+
+        case '1':
+            actualState.at(startPos) += delta;
             break;
-        case '3': actualState.at(startPos + 1) += delta;
+        case '2':
+            actualState.at(startPos) -= delta;
             break;
-        case '4': actualState.at(startPos + 1) -= delta;
+        case '3':
+            actualState.at(startPos + 1) += delta;
             break;
-        case '5': actualState.at(startPos + 2) += delta;
+        case '4':
+            actualState.at(startPos + 1) -= delta;
             break;
-        case '6': actualState.at(startPos + 2) -= delta;
+        case '5':
+            actualState.at(startPos + 2) += delta;
             break;
-        case '7': actualState.at(startPos + 3) += delta;
+        case '6':
+            actualState.at(startPos + 2) -= delta;
             break;
-        case '8': actualState.at(startPos + 3) -= delta;
+        case '7':
+            actualState.at(startPos + 3) += delta;
             break;
-        case '9': actualState.at(startPos + 4) += delta;
+        case '8':
+            actualState.at(startPos + 3) -= delta;
             break;
-        case '0': actualState.at(startPos + 4) -= delta;
+        case '9':
+            actualState.at(startPos + 4) += delta;
             break;
-        case '-': actualState.at(startPos + 5) += delta;
+        case '0':
+            actualState.at(startPos + 4) -= delta;
             break;
-        case '=': actualState.at(startPos + 5) -= delta;
+        case '-':
+            actualState.at(startPos + 5) += delta;
             break;
-        case 27:goodbye();
+        case '=':
+            actualState.at(startPos + 5) -= delta;
             break;
-        case 'q':cartesianOffsets.at(OFFSET_POS).at(0) += delta;
+        case 27:
+            goodbye();
             break;
-        case 'w':cartesianOffsets.at(OFFSET_POS).at(0) -= delta;
+        case 'q':
+            cartesianOffsets.at(OFFSET_POS).at(0) += delta;
             break;
-        case 'e':cartesianOffsets.at(OFFSET_POS).at(1) += delta;
+        case 'w':
+            cartesianOffsets.at(OFFSET_POS).at(0) -= delta;
             break;
-        case 'r':cartesianOffsets.at(OFFSET_POS).at(1) -= delta;
+        case 'e':
+            cartesianOffsets.at(OFFSET_POS).at(1) += delta;
             break;
-        case 't':cartesianOffsets.at(OFFSET_POS).at(2) += delta;
+        case 'r':
+            cartesianOffsets.at(OFFSET_POS).at(1) -= delta;
             break;
-        case 'y':cartesianOffsets.at(OFFSET_POS).at(2) -= delta;
+        case 't':
+            cartesianOffsets.at(OFFSET_POS).at(2) += delta;
             break;
-        case 'z':currenRobotNum++;
+        case 'y':
+            cartesianOffsets.at(OFFSET_POS).at(2) -= delta;
+            break;
+        case 'z':
+            currenRobotNum++;
             if (currenRobotNum > maxRobotNum)
                 currenRobotNum = 0;
             break;
-        case 'x':currenRobotNum--;
+        case 'x':
+            currenRobotNum--;
             if (currenRobotNum < 0)
                 currenRobotNum = maxRobotNum;
             break;
 
-        case 'c':actualStatePos++;
+        case 'c':
+            actualStatePos++;
 //            if (actualStatePos >= actualStates.size())
 //                actualStatePos = 0;
             break;
@@ -221,19 +242,19 @@ void myKeyboard(unsigned char key, int x, int y)
             if (actualStatePos == 0) {
 //                assert(actualStates.size() > 0);
 //                actualStatePos = actualStates.size() - 1;
-            }
-            else
+            } else
                 actualStatePos--;
             break;
-        case ' ':flgPlay = !flgPlay;
+        case ' ':
+            flgPlay = !flgPlay;
             break;
-        default:break;
+        default:
+            break;
     }
     display();
 }
 
-void menu(int choice)
-{
+void menu(int choice) {
 
     static int fullScreen = 0;
     static int px, py, sx, sy;
@@ -245,8 +266,7 @@ void menu(int choice)
                 glutReshapeWindow(sx, sy);
                 glutChangeToMenuEntry(1, "Full Screen", 1);
                 fullScreen = 0;
-            }
-            else {
+            } else {
                 px = glutGet((GLenum) GLUT_WINDOW_X);
                 py = glutGet((GLenum) GLUT_WINDOW_Y);
                 sx = glutGet((GLenum) GLUT_WINDOW_WIDTH);
@@ -256,16 +276,18 @@ void menu(int choice)
                 fullScreen = 1;
             }
             break;
-        case 2:toggleIdle();
+        case 2:
+            toggleIdle();
             break;
-        case 3:goodbye();
+        case 3:
+            goodbye();
             break;
-        default:break;
+        default:
+            break;
     }
 }
 
-void init(void)
-{
+void init(void) {
     GLfloat light_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
     GLfloat light_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -320,17 +342,13 @@ void init(void)
     actualState.clear();
     cartesianOffsets.clear();
 
-    for (int i = 0; i < forceTorque->getSceneWrapper()->getActuatorCnt(); i++) {
-        cartesianOffsets.emplace_back(std::vector<double>{0, 0, 0});
-        actualState.push_back(0.0);
-    }
+    actualState = forceTorque->getSceneWrapper()->getRandomState();
 
-    SceneWrapper::dispState(actualState,"actual state in init");
+    SceneWrapper::dispState(actualState, "actual state in init");
 
 }
 
-void createMenu()
-{
+void createMenu() {
     glutCreateMenu(menu);
     glutAddMenuEntry("Full Screen", 1);
     glutAddMenuEntry("Toggle Idle (Start/Stop)", 2);
@@ -338,15 +356,13 @@ void createMenu()
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
-void Loop(int i)
-{
+void Loop(int i) {
     glutPostRedisplay();
     flgTick = true;
     glutTimerFunc(50, Loop, 0);
 };
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
