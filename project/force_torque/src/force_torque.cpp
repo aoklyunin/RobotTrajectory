@@ -47,7 +47,17 @@ void ForceTorque::writeReport(char *path) {
 
 void ForceTorque::calculateDynamic(){
     for (auto &sd :_sceneWrapper->getSceneDescriptions()){
-
+        auto linkPositions = sd->getAllLinkPositions(_state);
+        auto massCenterPositions = sd->getAllLinkMassCenterPositions(_state);
+        //info_msg(massCenterPositions.size());
+        for (int i=0;i<sd->getLinkCnt();i++){
+            info_msg(
+                    massCenterPositions.at(i*4)," ",
+                    massCenterPositions.at(i*4+1)," ",
+                    massCenterPositions.at(i*4+2)," ",
+                    massCenterPositions.at(i*4+3)
+            );
+        }
     }
 }
 

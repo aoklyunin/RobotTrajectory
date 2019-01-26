@@ -498,10 +498,10 @@ std::vector<double> SceneWrapper::getAllPoses(std::vector<double> state)
     std::vector<double> poses;
     for (unsigned long i = 0; i < _sceneDescriptions.size(); i++) {
         if (_sceneDescriptions.at(i)->getActuatorCnt() > 0) {
- //           info_msg("SceneWrapper::getAllPoses: ",i);
+ //           info_msg("SceneWrapper::getAllLinkPositions: ",i);
             auto localState = getSingleRobotState(state, i);
    //         dispState(localState, "local state");
-            auto pos = _sceneDescriptions.at(i)->getAllPoses(localState);
+            auto pos = _sceneDescriptions.at(i)->getAllLinkPositions(localState);
             poses.insert(poses.end(), pos.begin(), pos.end());
         }
     }

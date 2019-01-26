@@ -23,5 +23,5 @@ public:
 private:
 
     void _init(std::string &&description_file_path) override;
-
+    std::vector<double> _getMassCenters(std::vector<double> state) override;
 };

@@ -43,7 +43,10 @@ private:
 
     // list of transform matrices for all links
     std::vector<Eigen::Matrix4d> _getTrasformMatrixies(std::vector<double> state) override;
-  Eigen::Matrix4d _getLastTrasformMatrix(std::vector<double> state) override;
+    Eigen::Matrix4d _getLastTrasformMatrix(std::vector<double> state) override;
+
+    std::vector<double> _getMassCenters() override;
+    std::vector<Eigen::Matrix3d> _getInertias() override;
 
     void _loadFromFile(std::string path) override;
 

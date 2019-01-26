@@ -3,6 +3,7 @@
 #include <traces.h>
 #include <fstream>
 #include <set>
+#include <urdf_scene_description.h>
 
 
 void URDFSceneDescription::_addURDFJoints(std::vector<std::shared_ptr<urdf::Joint>> jointList,
@@ -38,10 +39,31 @@ void URDFSceneDescription::_addURDFJoints(std::vector<std::shared_ptr<urdf::Join
         //info_msg(_getScaleMatrix(scale.x,scale.y,scale.z));
         linkTransform = linkTransform * _getScaleMatrix(scale.x, scale.y, scale.z);
 
+        auto mc = std::vector<double>{
+            link->inertial->mass,
+            link->inertial->origin.position.x,
+            link->inertial->origin.position.y,
+            link->inertial->origin.position.z,
+            };
+
+        double inertiaData[9] = {link->inertial->ixx,
+                link->inertial->ixy,
+                link->inertial->ixz,
+                link->inertial->ixy,
+                link->inertial->iyy,
+                link->inertial->iyz,
+                link->inertial->ixz,
+                link->inertial->iyz,
+                link->inertial->izz};
+
+        auto inertia = Eigen::Matrix3d(inertiaData);
+
         _links.emplace_back(std::make_shared<Link>(
                 std::dynamic_pointer_cast<const urdf::Mesh>(link->collision->geometry)->filename,
                 std::make_shared<Eigen::Matrix4d>(linkTransform),
-                link->name));
+                link->name,
+                inertia,
+                mc));
 
         _joints.emplace_back(selfTransform, linkTransform, axis, isFixed, 0.0);
     }
@@ -57,10 +79,32 @@ void URDFSceneDescription::_addURDFJoints(std::vector<std::shared_ptr<urdf::Join
                 //   info_msg(_getScaleMatrix(scale.x,scale.y,scale.z));
                 linkTransform = linkTransform * _getScaleMatrix(scale.x, scale.y, scale.z);
 
+
+                auto mc = std::vector<double>{
+                        entry.second->inertial->mass,
+                        entry.second->inertial->origin.position.x,
+                        entry.second->inertial->origin.position.y,
+                        entry.second->inertial->origin.position.z,
+                };
+
+                double inertiaData[9] = {entry.second->inertial->ixx,
+                                         entry.second->inertial->ixy,
+                                         entry.second->inertial->ixz,
+                                         entry.second->inertial->ixy,
+                                         entry.second->inertial->iyy,
+                                         entry.second->inertial->iyz,
+                                         entry.second->inertial->ixz,
+                                         entry.second->inertial->iyz,
+                                         entry.second->inertial->izz};
+
+                auto inertia = Eigen::Matrix3d(inertiaData);
+
                 auto link = std::make_shared<Link>(
                         std::dynamic_pointer_cast<const urdf::Mesh>(entry.second->collision->geometry)->filename,
                         std::make_shared<Eigen::Matrix4d>(linkTransform),
-                        entry.second->name
+                        entry.second->name,
+                        inertia,
+                        mc
                 );
                 _links.emplace_back(link);
                 _fixedLinks.emplace_back(link);
@@ -202,6 +246,22 @@ Eigen::Matrix4d URDFSceneDescription::_getLastTrasformMatrix(std::vector<double>
 
 }
 
+std::vector<double> URDFSceneDescription::_getMassCenters() {
+    std::vector<double> result;
+    for(auto & link:_links){
+        result.insert(result.end(),link->massCenter.begin(),link->massCenter.end());
+    }
+    return result;
+}
+
+std::vector<Eigen::Matrix3d> URDFSceneDescription::_getInertias() {
+    std::vector<Eigen::Matrix3d> result;
+    for(auto & link:_links){
+        result.emplace_back(link->inertia);
+    }
+    return result;
+}
+
 Eigen::Matrix4d URDFJoint::getTransformMatrix() {
     Eigen::Matrix4d rotM;
     double theta = jointAngle;
@@ -220,3 +280,4 @@ Eigen::Matrix4d URDFJoint::getTransformMatrix() {
 
     return selfTransform * rotM;
 }
+

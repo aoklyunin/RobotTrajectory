@@ -31,13 +31,20 @@ struct Link
 {
     Link(const std::string model_path,
          std::shared_ptr<Eigen::Matrix4d> transformMatrix,
-         std::string name
+         std::string name,
+         Eigen::Matrix3d inertia,
+         std::vector<double> massCenter
     );
 
     std::string model_path;
     std::string name;
     std::shared_ptr<Eigen::Matrix4d> transformMatrix;
     std::string toString() const;
+
+    Eigen::Matrix3d inertia;
+    std::vector<double> massCenter;
+
+
 };
 
 class SceneDescription
@@ -53,8 +60,6 @@ public:
 
     virtual ~SceneDescription() = default;
     SceneDescription();
-
-    std::vector<Eigen::Matrix4d> getTrasformMatrices(std::vector<double> state);
 
     bool isStateEnabled(std::vector<double> state);
 
@@ -85,7 +90,8 @@ public:
     std::vector<double> getEndEffectorPos(std::vector<double> state);
 
     std::vector<double> getFullPosition(std::shared_ptr<Eigen::Matrix4d> matrix);
-    std::vector<double> getAllPoses(std::vector<double> state);
+    std::vector<double> getAllLinkPositions(std::vector<double> state);
+    std::vector<double> getAllLinkMassCenterPositions(std::vector<double> state);
 
 protected:
 
@@ -93,7 +99,8 @@ protected:
     // list of transform matrices for all links
     virtual std::vector<Eigen::Matrix4d> _getTrasformMatrixies(std::vector<double> state) = 0;
     virtual Eigen::Matrix4d _getLastTrasformMatrix(std::vector<double> state) = 0;
-
+    virtual std::vector<double> _getMassCenters() = 0;
+    virtual std::vector<Eigen::Matrix3d> _getInertias() = 0;
 
     void _beforeLoadFromFile();
     void _afterLoadFromFile();

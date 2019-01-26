@@ -171,11 +171,6 @@ void SceneDescription::setScale(const std::vector<double> &scale)
     }
 }
 
-std::vector<Eigen::Matrix4d> SceneDescription::getTrasformMatrices(std::vector<double> state)
-{
-    return _getTrasformMatrixies(std::move(state));
-}
-
 const std::vector<std::shared_ptr<Actuator>> SceneDescription::getActuators() const
 {
     return _actuators;
@@ -193,11 +188,13 @@ std::string Link::toString() const
 
 Link::Link(const std::string model_path,
            std::shared_ptr<Eigen::Matrix4d> transformMatrix,
-           std::string name
+           std::string name,
+           Eigen::Matrix3d inertia,
+           std::vector<double> massCenter
 )
     : model_path(model_path),
       transformMatrix(std::move(transformMatrix)),
-      name(name)
+      name(name), inertia(inertia), massCenter(massCenter)
 {}
 
 void SceneDescription::dispActuators(std::vector<std::shared_ptr<Actuator>> actuators)
@@ -284,9 +281,9 @@ std::vector<double> SceneDescription::getEndEffectorPos(std::vector<double> stat
     return getPosition(tf);
 }
 
-std::vector<double> SceneDescription::getAllPoses(std::vector<double> state)
+std::vector<double> SceneDescription::getAllLinkPositions(std::vector<double> state)
 {
-//    info_msg("SceneWrapper::getAllPoses");
+//    info_msg("SceneWrapper::getAllLinkPositions");
 //    std::string msg = "";
 //    char buf[256];
 //
@@ -310,6 +307,30 @@ std::vector<double> SceneDescription::getAllPoses(std::vector<double> state)
 //    }
     return allPoses;
 }
+
+std::vector<double> SceneDescription::getAllLinkMassCenterPositions(std::vector<double> state)
+{
+    std::vector<double> cmposes;
+    auto tfs = _getTrasformMatrixies(state);
+    auto mcs = _getMassCenters();
+    //  info_msg("SceneDescription::getEndEffectorPos ", tfs.size());
+    for (int i=0;i<_links.size();i++){
+        //info_msg("i:",i);
+        auto tf = tfs.at(i);
+        auto cm = _links.at(i)->massCenter;
+        double mass = cm.at(0);
+        double data[4] {cm.at(1),cm.at(2),cm.at(3),1};
+        Eigen::Vector4d pos(data);
+        pos = tf*pos;
+        cmposes.emplace_back(mass);
+        cmposes.emplace_back(pos(0));
+        cmposes.emplace_back(pos(1));
+        cmposes.emplace_back(pos(2));
+    }
+    return cmposes;
+}
+
+
 
 // get position by transfer function
 std::vector<double> SceneDescription::getPosition(Eigen::Matrix4d tf)
