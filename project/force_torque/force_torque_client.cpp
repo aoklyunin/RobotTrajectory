@@ -308,7 +308,7 @@ void init(void)
                     Eigen::Vector3d(0.0, 1.0, 0.0));
 
     std::shared_ptr<SceneWrapper> sceneWrapper = std::make_shared<SceneWrapper>();
-    sceneWrapper->buildFromFile("../../../config/murdf/demo_scene.json");
+    sceneWrapper->buildFromFile("../../../config/murdf/ur10.json");
 
     forceTorque = std::make_shared<ForceTorque>(sceneWrapper);
     forceTorque->prepareTick();

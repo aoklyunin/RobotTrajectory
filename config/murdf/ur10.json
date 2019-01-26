@@ -1,0 +1,12 @@
+{
+    "name":"scene4robots",
+
+    "dynamicObjects":[
+        {
+            "model":"../../../config/urdf/ur10.urdf",
+            "pos": [0.0,0.0,0.0],
+            "rpy" : [0.0, 0.0, 0.0],
+            "scale": [1.0,1.0,1.0]
+        }
+    ]
+}

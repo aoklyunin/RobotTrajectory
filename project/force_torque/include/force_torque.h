@@ -13,16 +13,23 @@ public:
     bool isReady();
 
     ForceTorque(std::shared_ptr<SceneWrapper>);
+
     std::shared_ptr<SceneWrapper> getSceneWrapper();
 
     void setState(std::vector<double> state);
 
     void writeReport(char * path);
 
+    void calculateDynamic();
+
+    void calculateKinematic();
+
 private:
     std::shared_ptr<SceneWrapper> _sceneWrapper;
 
     std::vector<double> _state;
+    std::vector<double> _velocities;
+    std::vector<double> _accelerations;
     std::vector<double> _toque;
 
     // tm, state, torque

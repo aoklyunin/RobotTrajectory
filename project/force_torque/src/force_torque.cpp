@@ -14,9 +14,8 @@ void ForceTorque::prepareTick() {
 }
 
 void ForceTorque::tick() {
-    for (auto &sd :_sceneWrapper->getSceneDescriptions()){
-
-    }
+    calculateDynamic();
+    calculateKinematic();
 }
 
 ForceTorque::ForceTorque(std::shared_ptr<SceneWrapper> sceneWrapper) {
@@ -44,4 +43,16 @@ void ForceTorque::writeReport(char *path) {
     myfile << "Writing this to a file.\n";
     myfile.close();
     info_msg("writeReport works");
+}
+
+void ForceTorque::calculateDynamic(){
+    for (auto &sd :_sceneWrapper->getSceneDescriptions()){
+
+    }
+}
+
+void ForceTorque::calculateKinematic(){
+    for (auto &sd :_sceneWrapper->getSceneDescriptions()){
+
+    }
 }
