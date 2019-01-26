@@ -25,6 +25,8 @@ public:
     void calculateKinematic(double dt);
     void setFlgPlay(bool flgPlay);
 
+    void addToLog();
+
 private:
     std::shared_ptr<SceneWrapper> _sceneWrapper;
 

@@ -23,11 +23,24 @@ void ForceTorque::prepareTick() {
     }
 }
 
+void ForceTorque::addToLog(){
+    std::vector<double> logRec;
+    logRec.insert(logRec.end(),_state.begin(),_state.end());
+    logRec.insert(logRec.end(),_torques.begin(),_torques.end());
+
+    log.emplace_back(logRec);
+}
+
 void ForceTorque::tick(double dt) {
+    _state = _sceneWrapper->getRandomState();
+
     //info_msg(_flgPlay);
     calculateDynamic();
+
     if (_flgPlay)
         calculateKinematic(dt);
+
+    addToLog();
 }
 
 ForceTorque::ForceTorque(std::shared_ptr<SceneWrapper> sceneWrapper) {
@@ -59,7 +72,11 @@ void ForceTorque::setState(std::vector<double> state) {
 void ForceTorque::writeReport(char *path) {
     std::ofstream myfile;
     myfile.open(path);
-    myfile << "Writing this to a file.\n";
+    for (auto & logRec:log) {
+        for(auto & val:logRec)
+            myfile << val<<" ";
+        myfile<<"\n";
+    }
     myfile.close();
     info_msg("writeReport works");
 }
