@@ -1,12 +1,37 @@
 {
-    "name":"scene4robots",
+    "name":"UR10",
 
-    "dynamicObjects":[
+    "dh":[
         {
-            "model":"../../../config/urdf/ur10.urdf",
-            "pos": [0.0,0.0,0.0],
-            "rpy" : [0.0, 0.0, 0.0],
-            "scale": [1.0,1.0,1.0]
+            "theta":0,
+            "d":0.1273,
+            "alpha":90,
+            "a":0
+        },{
+            "theta":-90,
+            "d":0,
+            "alpha":0,
+            "a":-0.612
+        },{
+            "theta":0,
+            "d":0,
+            "alpha":0,
+            "a":-0.5723
+        },{
+            "theta":-90,
+            "d":0.163941,
+            "alpha":90,
+            "a":0
+        },{
+            "theta":0,
+            "d":0.1157,
+            "alpha":-90,
+            "a":0
+        },{
+            "theta":0,
+            "d":0.0922,
+            "alpha":0,
+            "a":0
         }
     ]
 }

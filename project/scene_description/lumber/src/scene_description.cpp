@@ -3,6 +3,7 @@
 #include <traces.h>
 
 #include <utility>
+#include <scene_description.h>
 
 
 void SceneDescription::_beforeLoadFromFile()
@@ -377,4 +378,14 @@ std::vector<double> SceneDescription::getFullPosition(std::shared_ptr<Eigen::Mat
     return pos;
 }
 
+std::vector<double> SceneDescription::getRandomState() {
+    std::vector<double> state;
+    for (auto & actuator:_actuators){
+        state.emplace_back(actuator->getRandomAngle());
+    }
+}
 
+double Actuator::getRandomAngle(){
+    double f = (double) rand() / RAND_MAX;
+    return minAngle + f * (minAngle - minAngle);
+}

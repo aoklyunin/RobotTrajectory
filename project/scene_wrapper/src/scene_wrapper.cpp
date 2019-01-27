@@ -268,7 +268,7 @@ void SceneWrapper::buildFromFile(std::string path)
     _path = path;
     _sceneDescriptions.clear();
 
-    Json::Reader reader;
+      Json::Reader reader;
     Json::Value obj;
 
     std::ifstream ifs(path.c_str(), std::ios_base::binary);
@@ -286,15 +286,15 @@ void SceneWrapper::buildFromFile(std::string path)
         std::shared_ptr<Eigen::Matrix4d> localMatrix = std::make_shared<Eigen::Matrix4d>();
 
         std::vector<double> pose{
-            d["pos"][0].asDouble(),
-            d["pos"][1].asDouble(),
-            d["pos"][2].asDouble(),
-            d["rpy"][0].asDouble(),
-            d["rpy"][0].asDouble(),
-            d["rpy"][0].asDouble(),
-            d["scale"][0].asDouble(),
-            d["scale"][0].asDouble(),
-            d["scale"][0].asDouble()
+                d["pos"][0].asDouble(),
+                d["pos"][1].asDouble(),
+                d["pos"][2].asDouble(),
+                d["rpy"][0].asDouble(),
+                d["rpy"][0].asDouble(),
+                d["rpy"][0].asDouble(),
+                d["scale"][0].asDouble(),
+                d["scale"][0].asDouble(),
+                d["scale"][0].asDouble()
         };
 
         addModel(URDFPath, pose);

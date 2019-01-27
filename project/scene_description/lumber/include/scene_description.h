@@ -27,6 +27,8 @@ struct Actuator
              std::string prevLinkName,
              Eigen::Vector3d axis);
     std::string toString() const;
+
+    double  getRandomAngle();
 };
 
 struct Link
@@ -97,6 +99,8 @@ public:
     std::vector<Eigen::Matrix3d> getInertias();
 
     virtual std::vector<Eigen::Vector3d> getAxes(std::vector<double> state) = 0;
+
+    std::vector<double> getRandomState();
 
 protected:
 

@@ -8,9 +8,10 @@ find_package(jsoncpp REQUIRED)
 find_package(Threads)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
-
+set(JSONCPP_LIBRARIES jsoncpp)
 
 include_directories(
+        /usr/include/jsoncpp
         lumber/include
         include
 
@@ -19,6 +20,8 @@ include_directories(
 
         ${EIGEN3_INCLUDE_DIRS}
         ${Boost_INCLUDE_DIR}
+
+
 )
 
 link_directories(
@@ -33,6 +36,8 @@ add_library(
         lumber/include/scene_description.h
         src/urdf_scene_description.cpp
         include/urdf_scene_description.h
+        src/dh_scene_description.cpp
+        include/dh_scene_description.h
 )
 
 
@@ -46,13 +51,42 @@ add_executable(testURDFSceneDescription
         lumber/include/scene_description.h)
 
 target_link_libraries(testURDFSceneDescription
+
+        misc
+        urdf_reader
+        ${Boost_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+
+        tbbmalloc_proxy
+        tbbmalloc
+
+     #   -fsanitize=address
+        -lboost_filesystem
+        -lboost_system
+        )
+
+
+
+add_executable(testDH
+        test/test_dh.cpp
+        include/dh_scene_description.h
+        src/dh_scene_description.cpp
+
+        include/urdf_scene_description.h
+        src/urdf_scene_description.cpp
+
+        lumber/src/scene_description.cpp
+        lumber/include/scene_description.h)
+
+target_link_libraries(testDH
+        ${JSONCPP_LIBRARIES}
         misc
         urdf_reader
         ${Boost_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
         tbbmalloc_proxy
         tbbmalloc
-        -fsanitize=address
+       # -fsanitize=address
         -lboost_filesystem
         -lboost_system
         )
