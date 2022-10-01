@@ -11,18 +11,20 @@ for visualisation you need to install OpengGL ang GLUT cpp libraries
 also you need jsoncpp, threads, Eigen3, 
 
 TinyXML:
-sudo apt-get install libtinyxml-dev 
 
-connect to server
- ssh -v aklyunin@ellis.tra.ai
+sudo apt-get install libtinyxml-dev 
 
 
 joint - сочленение
+
 actuator - подвижное сочленение
+
 link - звено
 
-отладка 
+отладка:
+
 gdb binary_name
+
 gdb --args binary (сюда писать ключи как при нормальном зауске)
 
 
